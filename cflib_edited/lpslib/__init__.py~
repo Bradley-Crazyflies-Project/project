@@ -43,7 +43,7 @@ from cflib.crazyflie import Crazyflie
 from lpslib.lopoanchor import LoPoAnchor
 
 cf = Crazyflie()
-cf.open_link("radio://0/80/2M")
+cf.open_link(cf,"radio://0/80/2M")
 
 anchor = LoPoAnchor(cf)
 anchor.set_position(0, (0.00, 0.29, 0.15))
