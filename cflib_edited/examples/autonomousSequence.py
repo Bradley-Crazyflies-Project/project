@@ -40,11 +40,13 @@ from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.crazyflie.syncLogger import SyncLogger
 
 # URI to the Crazyflie to connect to
-uri = 'radio://0/80/2M'
+uri = 'radio://0/80/2M/E7E7E7E701'
 
 # Change the sequence according to your setup
 #             x    y    z  YAW
 sequence = [
+    (1, .25, 1, 0),
+    (1, .25, 1, 0),
     (1, .25, 1, 0),
 ]
 

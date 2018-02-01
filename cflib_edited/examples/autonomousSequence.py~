@@ -40,7 +40,7 @@ from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.crazyflie.syncLogger import SyncLogger
 
 # URI to the Crazyflie to connect to
-uri = 'radio://0/80/2M'
+uri = 'radio://0/80/2M/E7E7E7E701'
 
 # Change the sequence according to your setup
 #             x    y    z  YAW
@@ -141,5 +141,5 @@ if __name__ == '__main__':
 
     with SyncCrazyflie(uri) as scf:
         reset_estimator(scf)
-        start_position_printing(scf)
+        # start_position_printing(scf)
         run_sequence(scf, sequence)

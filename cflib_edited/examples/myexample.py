@@ -3,6 +3,7 @@ import cflib
 from cflib.crazyflie import Crazyflie
 from lpslib.lopoanchor import LoPoAnchor
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
+from threading import Thread
 import logging
 import random
 import time
@@ -22,21 +23,17 @@ class MyExample:
 		self._cf.connection_lost.add_callback(self._connection_lost)
 
 		self._cf.open_link(link_uri)
-
+			
 		print('Connecting to %s' % link_uri)
 
 	def _connected(self, link_uri):
 		""" This callback is called form the Crazyflie API when a Crazyflie
 		has been connected and the TOCs have been downloaded."""
-
+		print('Connected')
 		# Start a separate thread to do the motor test.
 		# Do not hijack the calling thread!
-		time.sleep(.1)
-		self._cf.commander.send_setpoint(0, 0, 0, 0)
-		self._cf.commander.send_setpoint(0, 0, 0, 15000)
-
-		self._cf.close_link()
-
+		Thread(target=self._test_func).start()	
+		
 	def _connection_failed(self, link_uri, msg):
 		"""Callback when connection initial connection fails (i.e no Crazyflie
 		at the specified address)"""
@@ -48,10 +45,32 @@ class MyExample:
 		print('Connection to %s lost: %s' % (link_uri, msg))
 
 	def _disconnected(self, link_uri):
-		"""Callback when the Crazyflie is disconnected (called in all cases)"""
+		"""Callback when the Crazyflie is disconnected (called in all cases)"""	
 		print('Disconnected from %s' % link_uri)
 
+	def _test_func(self):
+		print('In the test function')
+		thrust_mult = 1
+		thrust_step = 500
+		thrust = 26000
+		pitch = 0
+		roll = 0
+		yawrate = 0
 
+		# Unlock startup thrust protection
+		self._cf.commander.send_setpoint(0, 0, 0, 0)
+
+		while thrust >= 20000:
+			self._cf.commander.send_setpoint(roll, pitch, yawrate, thrust)
+			time.sleep(0.1)
+			if thrust >= 25000:
+				thrust_mult = -1
+			thrust += thrust_step * thrust_mult
+		self._cf.commander.send_setpoint(0, 0, 0, 0)
+			# Make sure that the last packet leaves before the link is closed
+			# since the message queue is not flushed before closing
+		time.sleep(0.1)
+		self._cf.close_link()
 
 
 
@@ -71,6 +90,6 @@ if __name__ == '__main__':
 	#   else:
 	#        print('No Crazyflies found, cannot run example')
 
-	le = MyExample('radio://0/80/2M/E7E7E7E701')
+	le = MyExample('radio://0/80/2M/E7E7E7E703')
 
 
