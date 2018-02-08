@@ -33,8 +33,10 @@ mode. It aims at documenting how to set the Crazyflie in position control mode
 and how to send setpoints.
 """
 import time
+import csv
 
 import cflib.crtp
+from cflib.crazyflie import Crazyflie
 from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.crazyflie.syncLogger import SyncLogger
@@ -45,9 +47,16 @@ uri = 'radio://0/80/2M/E7E7E7E701'
 # Change the sequence according to your setup
 #             x    y    z  YAW
 sequence = [
-    (1, .25, 1, 0),
-    (1, .25, 1, 0),
-    (1, .25, 1, 0),
+    (0.0,0.0, 0.0, 0.0),
+(2.0,1.0, 2.0, 0.0),
+(2.0,1.0, 2.0, 90.0),
+(2.5,1.0, 2.0, 270.0),
+(2.5,2.0, 2.0, 90.0),
+(2.0,2.0, 2.0, 45.0),
+(2.0,1.0, 2.0, 180.0),
+(2.0,1.0, 0.7, 0.0),
+(2.0,1.0, 0.2, 0.0),
+
 ]
 
 
@@ -106,7 +115,12 @@ def position_callback(timestamp, data, logconf):
     y = data['kalman.stateY']
     z = data['kalman.stateZ']
     print('pos: ({}, {}, {})'.format(x, y, z))
-
+#    location = [x,y,z]
+#    csvfile =  "/home/bitcraze/Documents/test.csv"
+#    with open(csvfile, "w") as output:
+#        writer = csv.writer(output, lineterminator='\n')
+#        for val in location:
+#            writer.writerow([val])
 
 def start_position_printing(scf):
     log_conf = LogConfig(name='Position', period_in_ms=500)
@@ -123,7 +137,7 @@ def run_sequence(scf, sequence):
     cf = scf.cf
 
     cf.param.set_value('flightmode.posSet', '1')
-
+    time.sleep(5.0)
     for position in sequence:
         print('Setting position {}'.format(position))
         for i in range(50):
@@ -141,7 +155,7 @@ def run_sequence(scf, sequence):
 if __name__ == '__main__':
     cflib.crtp.init_drivers(enable_debug_driver=False)
 
-    with SyncCrazyflie(uri) as scf:
+    with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
         reset_estimator(scf)
-        # start_position_printing(scf)
+        start_position_printing(scf)
         run_sequence(scf, sequence)

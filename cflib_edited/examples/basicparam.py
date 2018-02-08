@@ -161,7 +161,7 @@ if __name__ == '__main__':
         print(i[0])
 
     if len(available) > 0:
-        pe = ParamExample(available[0][0])
+        pe = ParamExample('radio://0/80/2M/E7E7E7E701') 
         # The Crazyflie lib doesn't contain anything to keep the application
         # alive, so this is where your application should do something. In our
         # case we are just waiting until we are disconnected.

@@ -59,7 +59,7 @@ if __name__ == '__main__':
         lg_stab.add_variable('stabilizer.pitch', 'float')
         lg_stab.add_variable('stabilizer.yaw', 'float')
 
-        with SyncCrazyflie('radio://0/80/2M/E7E7E7E701') as scf:  #(available[0][0])
+        with SyncCrazyflie(available[0][0]) as scf:
             with SyncLogger(scf, lg_stab) as logger:
                 endTime = time.time() + 10
 

@@ -90,6 +90,6 @@ if __name__ == '__main__':
 	#   else:
 	#        print('No Crazyflies found, cannot run example')
 
-	le = MyExample('radio://0/80/2M/E7E7E7E703')
+	le = MyExample('radio://0/80/2M/E7E7E7E701')
 
 
