@@ -34,6 +34,7 @@ and how to send setpoints.
 """
 import time
 import csv
+import datetime
 
 import cflib.crtp
 from cflib.crazyflie import Crazyflie
@@ -47,15 +48,14 @@ uri = 'radio://0/80/2M/E7E7E7E701'
 # Change the sequence according to your setup
 #             x    y    z  YAW
 sequence = [
-    (0.0,0.0, 0.0, 0.0),
-(2.0,1.0, 2.0, 0.0),
-(2.0,1.0, 2.0, 90.0),
-(2.5,1.0, 2.0, 270.0),
-(2.5,2.0, 2.0, 90.0),
-(2.0,2.0, 2.0, 45.0),
-(2.0,1.0, 2.0, 180.0),
+(2.0,1.0, 1.0, 0.0),
+(3.0,1.0, 1.0, 0.0),
+(3.0,2.0, 1.0, 0.0),
+(2.0,2.0, 1.0, 0.0),
+(2.0,1.0, 1.0, 0.0),
+(2.0,1.0, 1.0, 0.0),
 (2.0,1.0, 0.7, 0.0),
-(2.0,1.0, 0.2, 0.0),
+(2.0,1.0, 0.3, 0.0),
 
 ]
 
@@ -115,13 +115,11 @@ def position_callback(timestamp, data, logconf):
     y = data['kalman.stateY']
     z = data['kalman.stateZ']
     print('pos: ({}, {}, {})'.format(x, y, z))
-#    location = [x,y,z]
-#    csvfile =  "/home/bitcraze/Documents/test.csv"
-#    with open(csvfile, "w") as output:
-#        writer = csv.writer(output, lineterminator='\n')
-#        for val in location:
-#            writer.writerow([val])
-
+    with open('/home/bitcraze/Documents/'+datetime.datetime.now().strftime('%Y-%m-%d-%H')+'_flight_data.csv','a') as csvfile:
+        writer = csv.writer(csvfile,delimiter=',')
+        writer.writerow([x, y, z])
+    csvfile.close()
+#    
 def start_position_printing(scf):
     log_conf = LogConfig(name='Position', period_in_ms=500)
     log_conf.add_variable('kalman.stateX', 'float')
@@ -140,7 +138,7 @@ def run_sequence(scf, sequence):
     time.sleep(5.0)
     for position in sequence:
         print('Setting position {}'.format(position))
-        for i in range(50):
+        for i in range(100):
             cf.commander.send_setpoint(position[1], position[0],
                                        position[3],
                                        int(position[2] * 1000))
