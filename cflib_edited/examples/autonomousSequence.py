@@ -135,10 +135,10 @@ def run_sequence(scf, sequence):
     cf = scf.cf
 
     cf.param.set_value('flightmode.posSet', '1')
-    time.sleep(5.0)
+    time.sleep(5.0) #Wait to initialize the loco system
     for position in sequence:
         print('Setting position {}'.format(position))
-        for i in range(100):
+        for i in range(50):
             cf.commander.send_setpoint(position[1], position[0],
                                        position[3],
                                        int(position[2] * 1000))
