@@ -69,8 +69,10 @@ def circle_next_pos(t,r):
     y_c = 1.25
     x_pos = x_c + (r * np.cos(t/10))
     y_pos = y_c + (r * np.sin(t/10))
-    yaw = 90 + (5.45 * t)
-    desired_pos = (x_pos, y_pos, 1.0, yaw)
+#    yaw = 90 + (5.45 * t)
+    desired_pos = (x_pos, y_pos, 1.0, 0.0)
+#    print(yaw)
+#    print(t)
     return desired_pos
     
 
@@ -131,7 +133,7 @@ def position_callback(timestamp, data, logconf):
     print('pos: ({}, {}, {})'.format(x, y, z))
     with open('/home/bitcraze/Documents/'+datetime.datetime.now().strftime('%Y-%m-%d-%H')+'_flight_data.csv','a') as csvfile:
         writer = csv.writer(csvfile,delimiter=',')
-        writer.writerow([x, y, z])
+        writer.writerow([x, y, z, timestamp])
     csvfile.close()
 #    
 def start_position_printing(scf):
@@ -158,7 +160,7 @@ def run_sequence(scf, sequence_to, sequence_land):
                                        int(position[2] * 1000))
             time.sleep(0.1)
     
-    for t in range(100):
+    for t in range(300):
         position = circle_next_pos(t,0.5)
         cf.commander.send_setpoint(position[1], position[0],
                                    position[3],
