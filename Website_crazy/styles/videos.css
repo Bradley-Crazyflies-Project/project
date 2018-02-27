@@ -1,0 +1,49 @@
+.mainVideo {
+	width: 100%;
+	margin-top: 60px;
+	margin-bottom: 20px;
+}
+.mainVideoTitle {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 40px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 50px;
+}
+.video_wrapper_over {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.video_wrapper {
+	height: 350px;
+	width: 500px;
+	margin-right: 50px;
+	margin-left: 50px;
+	padding: 0;
+}
+.video { 
+	width: 500px;
+	height: 300px;
+}
+p.video_title {
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 8px;
+}
+
+#footer.stickybottom {
+	position: fixed;
+	bottom:0;
+	left: 0;
+	right:0;
+}
+@media screen and (min-width: 1245px) {
+	.video_wrapper_over {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+}
