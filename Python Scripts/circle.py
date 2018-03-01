@@ -160,7 +160,7 @@ def run_sequence(scf, sequence_to, sequence_land):
                                        int(position[2] * 1000))
             time.sleep(0.1)
     
-    for t in range(300):
+    for t in range(100):
         position = circle_next_pos(t,0.5)
         cf.commander.send_setpoint(position[1], position[0],
                                    position[3],
