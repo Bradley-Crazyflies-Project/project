@@ -50,6 +50,9 @@ y0  7               1
 import time
 import csv
 import datetime
+import numpy as np
+
+
 import cflib.crtp
 from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.swarm import CachedCfFactory
@@ -59,7 +62,7 @@ from cflib.crazyflie.syncLogger import SyncLogger
 # Change uris and sequences according to your setup
 URI1 = 'radio://0/80/2M/E7E7E7E701'
 URI2 = 'radio://0/80/2M/E7E7E7E702'
-URI3 = 'radio://0/80/2M/E7E7E7E705'
+#URI3 = 'radio://0/80/2M/E7E7E7E705'
 #URI4 = 'radio://0/70/2M/E7E7E7E704'
 #URI5 = 'radio://0/70/2M/E7E7E7E705'
 #URI6 = 'radio://0/70/2M/E7E7E7E706'
@@ -90,15 +93,15 @@ sequence1 = [
 
 sequence2 = [
     (x1, y1, z0, 5.0),
-    (x1, y1, z, 20.0),
-    (x1, y1, z0, 5.0),
+#    (x1, y1, z, 20.0),
+#    (x1, y1, z0, 5.0),
 ]
 
-sequence3 = [
-    (1.75, 0.25, z0, 5.0),
-    (1.75, 0.25, z, 20.0),
-    (1.75, 0.25, z0, 5.0),
-]
+#sequence3 = [
+#    (1.75, 0.25, z0, 5.0),
+#    (1.75, 0.25, z, 20.0),
+#    (1.75, 0.25, z0, 5.0),
+#]
 
 #sequence4 = [
 #    (x0, y3, z0, 3.0),
@@ -145,7 +148,7 @@ sequence3 = [
 seq_args = {
     URI1: [sequence1],
     URI2: [sequence2],
-    URI3: [sequence3],
+#    URI3: [sequence3],
 #    URI4: [sequence4],
 #    URI5: [sequence5],
 #    URI6: [sequence6],
@@ -159,7 +162,7 @@ seq_args = {
 uris = {
     URI1,
     URI2,
-    URI3,
+#    URI3,
 #    URI4,
 #    URI5,
 #    URI6,
@@ -256,6 +259,16 @@ def land(cf, position):
     # since the message queue is not flushed before closing
     time.sleep(0.1)
 
+def circle_next_pos(t,r):
+    x_c = 1.25
+    y_c = 1.25
+    x_pos = x_c + (r * np.cos(t/10))
+    y_pos = y_c + (r * np.sin(t/10))
+#    yaw = 90 + (5.45 * t)
+    desired_pos = (x_pos, y_pos, 1.0, 0.0)
+#    print(yaw)
+#    print(t)
+    return desired_pos
 
 def run_sequence(scf, sequence):
     try:
@@ -270,7 +283,20 @@ def run_sequence(scf, sequence):
                 cf.commander.send_setpoint(position[1], position[0], 0,
                                            int(position[2] * 1000))
                 time.sleep(0.1)
-        land(cf, sequence[-1])
+                
+        land(cf, sequence[-1])  
+              
+        if cf.link_uri == URI2        
+            time.sleep(5)
+                
+            for t in range(100):
+                position = circle_next_pos(t,0.5)
+                cf.commander.send_setpoint(position[1], position[0],
+                                           position[3],
+                                           int(position[2] * 1000))
+                time.sleep(0.25) 
+        
+            land(cf, sequence[-1])
     except Exception as e:
         print(e)
 
