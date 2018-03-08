@@ -108,7 +108,7 @@ params = {
 #    (x1, y1, z0, 5.0),
 #    (x1, y1, z, 20.0),
 #    (x1, y1, z0, 5.0),
-]
+#]
 
 #sequence3 = [
 #    (1.75, 0.25, z0, 5.0),
@@ -243,7 +243,7 @@ def reset_estimator(scf):
 
 
 def take_off(cf, position):
-    take_off_time = 10.0
+    take_off_time = 5.0
     sleep_time = 0.1
     steps = int(take_off_time / sleep_time)
     vz = position[2] / take_off_time
@@ -252,6 +252,8 @@ def take_off(cf, position):
 
     for i in range(steps):
         cf.commander.send_velocity_world_setpoint(0, 0, vz, 0)
+#        cf.commander.send_setpoint(position[1], position[0], 0,
+#                                           int(vz * 1000))
         time.sleep(sleep_time)
 
 
@@ -295,22 +297,7 @@ def run_sequence(scf, params):
 
 # Takeoff Sequence
         take_off(cf, (x,y,z,0))
-#        for position in sequence:
-#            print('Setting position {}'.format(position))
-#            end_time = time.time() + position[3]
-#            while time.time() < end_time:
-#                cf.commander.send_setpoint(position[1], position[0], 0,
-#                                           int(position[2] * 1000))
-#                time.sleep(0.1) 
-#        for t in range(100):
-#            if t < 50:
-#                cf.commander.send_setpoint(y, x, 0,
-#                                           int((z * 1000)/2))
-#                time.sleep(0.1) 
-#            else:
-#                cf.commander.send_setpoint(y, x, 0,
-#                                           int(z * 1000))
-#                time.sleep(0.1)
+
 
 
 
