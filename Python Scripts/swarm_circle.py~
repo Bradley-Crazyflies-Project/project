@@ -62,7 +62,7 @@ from cflib.crazyflie.syncLogger import SyncLogger
 # Change uris and sequences according to your setup
 URI1 = 'radio://0/80/2M/E7E7E7E705'
 URI2 = 'radio://0/80/2M/E7E7E7E702'
-#URI3 = 'radio://0/80/2M/E7E7E7E705'
+URI3 = 'radio://0/80/2M/E7E7E7E701'
 #URI4 = 'radio://0/70/2M/E7E7E7E704'
 #URI5 = 'radio://0/70/2M/E7E7E7E705'
 #URI6 = 'radio://0/70/2M/E7E7E7E706'
@@ -84,24 +84,28 @@ y1 = 0.25
 #y2 = 0.4
 #y3 = 1.0
 
-params1 = {'r': 0.2, 'z': 1.0, 'x': 1.25, 'y': 1.25, 'offset': 0}
+#         r: radius, z: height, x: starting_x, y: starting_y, offset: degree offset for circle
+
+params1 = {'r': 0.0, 'z': 1.75, 'x': 1.25, 'y': 1.25, 'offset': 0}
 params2 = {'r': 0.7, 'z': 1.0, 'x': 1.75, 'y': 0.25, 'offset': 0}
+params3 = {'r': 0.7, 'z': 1.0, 'x': 1.0, 'y': 0.25, 'offset': 180}
 
 params = {
     URI1: [params1],
     URI2: [params2],
+    URI3: [params3],
 }
 
 
 #    x   y   z  time
-sequence1 = [
-    (x0, y0, z0, 5.0),
+#sequence1 = [
+#    (x0, y0, z0, 5.0),
 #    (x0, y0, z, 20.0),
 #    (x0, y0, z0, 5.0),
-]
+#]
 
-sequence2 = [
-    (x1, y1, z0, 5.0),
+##sequence2 = [
+#    (x1, y1, z0, 5.0),
 #    (x1, y1, z, 20.0),
 #    (x1, y1, z0, 5.0),
 ]
@@ -154,9 +158,9 @@ sequence2 = [
 #    (x2, y3, z0, 3.0),
 #]
 
-seq_args = {
-    URI1: [sequence1],
-    URI2: [sequence2],
+#seq_args = {
+#    URI1: [sequence1],
+#    URI2: [sequence2],
 #    URI3: [sequence3],
 #    URI4: [sequence4],
 #    URI5: [sequence5],
@@ -165,13 +169,13 @@ seq_args = {
 #    URI8: [sequence8],
 #    URI9: [sequence9],
 #    URI10: [sequence10],
-}
+#}
 
 # List of URIs, comment the one you do not want to fly
 uris = {
     URI1,
     URI2,
-#    URI3,
+    URI3,
 #    URI4,
 #    URI5,
 #    URI6,
@@ -239,7 +243,7 @@ def reset_estimator(scf):
 
 
 def take_off(cf, position):
-    take_off_time = 3.0
+    take_off_time = 10.0
     sleep_time = 0.1
     steps = int(take_off_time / sleep_time)
     vz = position[2] / take_off_time
@@ -268,11 +272,11 @@ def land(cf, position):
     # since the message queue is not flushed before closing
     time.sleep(0.1)
 
-def circle_next_pos(t,r):
+def circle_next_pos(t,r,offset):
     x_c = 1.25
     y_c = 1.25
-    x_pos = x_c + (r * np.cos(t/10))
-    y_pos = y_c + (r * np.sin(t/10))
+    x_pos = x_c + (r * np.cos(t/10 + offset))
+    y_pos = y_c + (r * np.sin(t/10 + offset))
 #    yaw = 90 + (5.45 * t)
     desired_pos = (x_pos, y_pos, 1.0, 0.0)
 #    print(yaw)
@@ -287,9 +291,10 @@ def run_sequence(scf, params):
         z = params['z']
         x = params['x']
         y = params['y']
+        offset = params['offset']
 
 # Takeoff Sequence
-#        take_off(cf, sequence[0])
+        take_off(cf, (x,y,z,0))
 #        for position in sequence:
 #            print('Setting position {}'.format(position))
 #            end_time = time.time() + position[3]
@@ -297,24 +302,24 @@ def run_sequence(scf, params):
 #                cf.commander.send_setpoint(position[1], position[0], 0,
 #                                           int(position[2] * 1000))
 #                time.sleep(0.1) 
-        for t in range(100):
-            if t < 25:
-                cf.commander.send_setpoint(y, x, 0,
-                                           int((z * 1000)/2))
-                time.sleep(0.1) 
-            else:
-                cf.commander.send_setpoint(y, x, 0,
-                                           int(z * 1000))
-                time.sleep(0.1)
+#        for t in range(100):
+#            if t < 50:
+#                cf.commander.send_setpoint(y, x, 0,
+#                                           int((z * 1000)/2))
+#                time.sleep(0.1) 
+#            else:
+#                cf.commander.send_setpoint(y, x, 0,
+#                                           int(z * 1000))
+#                time.sleep(0.1)
 
 
 
 # Circle Sequence
         for t in range(100):
-            position = circle_next_pos(t,r)
+            position = circle_next_pos(t,r,offset)
             cf.commander.send_setpoint(position[1], position[0],
                                        position[3],
-                                       int(position[2] * 1000))
+                                       int(z * 1000))
             time.sleep(0.25) 
         
         land(cf, (x,y,z,0))
