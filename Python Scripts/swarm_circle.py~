@@ -60,7 +60,7 @@ from cflib.crazyflie.swarm import Swarm
 from cflib.crazyflie.syncLogger import SyncLogger
 
 # Change uris and sequences according to your setup
-URI1 = 'radio://0/80/2M/E7E7E7E701'
+URI1 = 'radio://0/80/2M/E7E7E7E705'
 URI2 = 'radio://0/80/2M/E7E7E7E702'
 #URI3 = 'radio://0/80/2M/E7E7E7E705'
 #URI4 = 'radio://0/70/2M/E7E7E7E704'
@@ -84,11 +84,20 @@ y1 = 0.25
 #y2 = 0.4
 #y3 = 1.0
 
+params1 = {'r': 0.2, 'z': 1.0, 'x': 1.25, 'y': 1.25, 'offset': 0}
+params2 = {'r': 0.7, 'z': 1.0, 'x': 1.75, 'y': 0.25, 'offset': 0}
+
+params = {
+    URI1: [params1],
+    URI2: [params2],
+}
+
+
 #    x   y   z  time
 sequence1 = [
     (x0, y0, z0, 5.0),
-    (x0, y0, z, 20.0),
-    (x0, y0, z0, 5.0),
+#    (x0, y0, z, 20.0),
+#    (x0, y0, z0, 5.0),
 ]
 
 sequence2 = [
@@ -243,7 +252,7 @@ def take_off(cf, position):
 
 
 def land(cf, position):
-    landing_time = 1.0
+    landing_time = 2.0
     sleep_time = 0.1
     steps = int(landing_time / sleep_time)
     vz = -position[2] / landing_time
@@ -270,33 +279,45 @@ def circle_next_pos(t,r):
 #    print(t)
     return desired_pos
 
-def run_sequence(scf, sequence):
+def run_sequence(scf, params):
     try:
         cf = scf.cf
         cf.param.set_value('flightmode.posSet', '1')
+        r = params['r']
+        z = params['z']
+        x = params['x']
+        y = params['y']
 
+# Takeoff Sequence
 #        take_off(cf, sequence[0])
-        for position in sequence:
-            print('Setting position {}'.format(position))
-            end_time = time.time() + position[3]
-            while time.time() < end_time:
-                cf.commander.send_setpoint(position[1], position[0], 0,
-                                           int(position[2] * 1000))
+#        for position in sequence:
+#            print('Setting position {}'.format(position))
+#            end_time = time.time() + position[3]
+#            while time.time() < end_time:
+#                cf.commander.send_setpoint(position[1], position[0], 0,
+#                                           int(position[2] * 1000))
+#                time.sleep(0.1) 
+        for t in range(100):
+            if t < 25:
+                cf.commander.send_setpoint(y, x, 0,
+                                           int((z * 1000)/2))
+                time.sleep(0.1) 
+            else:
+                cf.commander.send_setpoint(y, x, 0,
+                                           int(z * 1000))
                 time.sleep(0.1)
-                
-        land(cf, sequence[-1])  
-              
-        if cf.link_uri == URI2        
-            time.sleep(5)
-                
-            for t in range(100):
-                position = circle_next_pos(t,0.5)
-                cf.commander.send_setpoint(position[1], position[0],
-                                           position[3],
-                                           int(position[2] * 1000))
-                time.sleep(0.25) 
+
+
+
+# Circle Sequence
+        for t in range(100):
+            position = circle_next_pos(t,r)
+            cf.commander.send_setpoint(position[1], position[0],
+                                       position[3],
+                                       int(position[2] * 1000))
+            time.sleep(0.25) 
         
-            land(cf, sequence[-1])
+        land(cf, (x,y,z,0))
     except Exception as e:
         print(e)
 
@@ -343,4 +364,4 @@ if __name__ == '__main__':
         swarm.parallel(wait_for_param_download)
         swarm.parallel(start_position_printing)
         time.sleep(3.0)
-        swarm.parallel(run_sequence, args_dict=seq_args)
+        swarm.parallel(run_sequence, args_dict=params)
