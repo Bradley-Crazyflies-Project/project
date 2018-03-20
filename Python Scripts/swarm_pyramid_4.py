@@ -60,10 +60,10 @@ from cflib.crazyflie.swarm import Swarm
 from cflib.crazyflie.syncLogger import SyncLogger
 
 # Change uris and sequences according to your setup
-URI1 = 'radio://0/80/2M/E7E7E7E705'
+URI1 = 'radio://0/80/2M/E7E7E7E701'
 URI2 = 'radio://0/80/2M/E7E7E7E702'
-URI3 = 'radio://0/80/2M/E7E7E7E701'
-#URI4 = 'radio://0/70/2M/E7E7E7E704'
+URI3 = 'radio://0/80/2M/E7E7E7E704'
+URI4 = 'radio://0/80/2M/E7E7E7E705'
 #URI5 = 'radio://0/70/2M/E7E7E7E705'
 #URI6 = 'radio://0/70/2M/E7E7E7E706'
 #URI7 = 'radio://0/70/2M/E7E7E7E707'
@@ -89,94 +89,21 @@ y1 = 0.25
 params1 = {'r': 0.0, 'z': 1.75, 'x': 1.25, 'y': 1.25, 'offset': 0}
 params2 = {'r': 0.7, 'z': 1.0, 'x': 1.75, 'y': 0.25, 'offset': 0}
 params3 = {'r': 0.7, 'z': 1.0, 'x': 1.0, 'y': 0.25, 'offset': 180}
+params4 = {'r': 0.7, 'z': 1.0, 'x': 0.25, 'y': 0.25, 'offset': 90}
 
 params = {
     URI1: [params1],
     URI2: [params2],
     URI3: [params3],
+    URI4: [params4],
 }
-
-
-#    x   y   z  time
-#sequence1 = [
-#    (x0, y0, z0, 5.0),
-#    (x0, y0, z, 20.0),
-#    (x0, y0, z0, 5.0),
-#]
-
-##sequence2 = [
-#    (x1, y1, z0, 5.0),
-#    (x1, y1, z, 20.0),
-#    (x1, y1, z0, 5.0),
-#]
-
-#sequence3 = [
-#    (1.75, 0.25, z0, 5.0),
-#    (1.75, 0.25, z, 20.0),
-#    (1.75, 0.25, z0, 5.0),
-#]
-
-#sequence4 = [
-#    (x0, y3, z0, 3.0),
-#    (x0, y3, z, 30.0),
-#    (x0, y3, z0, 3.0),
-#]
-
-#sequence5 = [
-#    (x1, y1, z0, 3.0),
-#    (x1, y1, z, 30.0),
-#    (x1, y1, z0, 3.0),
-#]
-
-#sequence6 = [
-#    (x1, y2, z0, 3.0),
-#    (x1, y2, z, 30.0),
-#    (x1, y2, z0, 3.0),
-#]
-
-#sequence7 = [
-#    (x2, y0, z0, 3.0),
-#    (x2, y0, z, 30.0),
-#    (x2, y0, z0, 3.0),
-#]
-
-#sequence8 = [
-#    (x2, y1, z0, 3.0),
-#    (x2, y1, z, 30.0),
-#    (x2, y1, z0, 3.0),
-#]
-
-#sequence9 = [
-#    (x2, y2, z0, 3.0),
-#    (x2, y2, z, 30.0),
-#    (x2, y2, z0, 3.0),
-#]
-
-#sequence10 = [
-#    (x2, y3, z0, 3.0),
-#    (x2, y3, z, 30.0),
-#    (x2, y3, z0, 3.0),
-#]
-
-#seq_args = {
-#    URI1: [sequence1],
-#    URI2: [sequence2],
-#    URI3: [sequence3],
-#    URI4: [sequence4],
-#    URI5: [sequence5],
-#    URI6: [sequence6],
-#    URI7: [sequence7],
-#    URI8: [sequence8],
-#    URI9: [sequence9],
-#    URI10: [sequence10],
-#}
 
 # List of URIs, comment the one you do not want to fly
 uris = {
     URI1,
     URI2,
     URI3,
-#    URI4,
+    URI4,
 #    URI5,
 #    URI6,
 #    URI7,
@@ -243,7 +170,7 @@ def reset_estimator(scf):
 
 
 def take_off(cf, position):
-    take_off_time = 5.0
+    take_off_time = 0.8
     sleep_time = 0.1
     steps = int(take_off_time / sleep_time)
     vz = position[2] / take_off_time
@@ -258,7 +185,7 @@ def take_off(cf, position):
 
 
 def land(cf, position):
-    landing_time = 2.0
+    landing_time = 1.5
     sleep_time = 0.1
     steps = int(landing_time / sleep_time)
     vz = -position[2] / landing_time
@@ -296,9 +223,7 @@ def run_sequence(scf, params):
         offset = params['offset']
 
 # Takeoff Sequence
-        take_off(cf, (x,y,z,0))
-
-
+        take_off(cf, (x,y,0.5,0)) #(x,y,z,yaw)
 
 
 # Circle Sequence
@@ -308,7 +233,13 @@ def run_sequence(scf, params):
                                        position[3],
                                        int(z * 1000))
             time.sleep(0.25) 
-        
+
+# Move to landing positions
+        for t in range(30):
+            cf.commander.send_setpoint(y, x,
+                                       0,
+                                       int(z * 1000))
+            time.sleep(0.2)
         land(cf, (x,y,z,0))
     except Exception as e:
         print(e)

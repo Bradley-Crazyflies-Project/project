@@ -296,7 +296,7 @@ def run_sequence(scf, params):
         offset = params['offset']
 
 # Takeoff Sequence
-        take_off(cf, (x,y,z,0))
+        take_off(cf, (x,y,1,0)) #(x,y,z,yaw)
 
 
 # Circle Sequence
@@ -308,7 +308,7 @@ def run_sequence(scf, params):
             time.sleep(0.25) 
 
 # Move to landing positions
-        for t in range(20):
+        for t in range(30):
             cf.commander.send_setpoint(y, x,
                                        0,
                                        int(z * 1000))
