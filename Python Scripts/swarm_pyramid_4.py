@@ -23,30 +23,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA  02110-1301, USA.
-"""
-Version of the AutonomousSequence.py example connecting to 10 Crazyflies.
-The Crazyflies go straight up, hover a while and land but the code is fairly
-generic and each Crazyflie has its own sequence of setpoints that it files
-to.
 
-The layout of the positions:
-    x2      x1      x0
-
-y3  10              4
-
-            ^ Y
-            |
-y2  9       6       3
-            |
-            +------> X
-
-y1  8       5       2
-
-
-
-y0  7               1
-
-"""
 import time
 import csv
 import datetime
@@ -86,10 +63,10 @@ y1 = 0.25
 
 #         r: radius, z: height, x: starting_x, y: starting_y, offset: degree offset for circle
 
-params1 = {'r': 0.0, 'z': 1.75, 'x': 1.25, 'y': 1.25, 'offset': 0}
-params2 = {'r': 0.7, 'z': 1.0, 'x': 1.75, 'y': 0.25, 'offset': 0}
-params3 = {'r': 0.7, 'z': 1.0, 'x': 1.0, 'y': 0.25, 'offset': 180}
-params4 = {'r': 0.7, 'z': 1.0, 'x': 0.25, 'y': 0.25, 'offset': 90}
+params1 = {'r': 0.0, 'z': 1.75, 'x_s': 1.25, 'y_s': 1.25, 'x_l': 1.25, 'y_l': 1.25, 'offset': 0}
+params2 = {'r': 0.7, 'z': 1.0, 'x_s': 1.75, 'y_s': 0.25, 'x_l': 0.25, 'y_l': 0.25, 'offset': 0}
+params3 = {'r': 0.7, 'z': 1.0, 'x_s': 1.0, 'y_s': 0.25, 'x_l': 1.0, 'y_l': 0.25, 'offset': 180}
+params4 = {'r': 0.7, 'z': 1.0, 'x_s': 0.25, 'y_s': 0.25, 'x_l': 1.75, 'y_l': 0.25, 'offset': 90}
 
 params = {
     URI1: [params1],
@@ -218,12 +195,14 @@ def run_sequence(scf, params):
         cf.param.set_value('flightmode.posSet', '1')
         r = params['r']
         z = params['z']
-        x = params['x']
-        y = params['y']
+        x_s = params['x_s']
+        y_s = params['y_s']
+        x_l = params['x_l']
+        y_l = params['y_l']
         offset = params['offset']
 
 # Takeoff Sequence
-        take_off(cf, (x,y,0.5,0)) #(x,y,z,yaw)
+        take_off(cf, (x_s,y_s,0.5,0)) #(x,y,z,yaw)
 
 
 # Circle Sequence
@@ -236,11 +215,11 @@ def run_sequence(scf, params):
 
 # Move to landing positions
         for t in range(30):
-            cf.commander.send_setpoint(y, x,
+            cf.commander.send_setpoint(y_l, x_l,
                                        0,
                                        int(z * 1000))
             time.sleep(0.2)
-        land(cf, (x,y,z,0))
+        land(cf, (x_l,y_l,z,0))
     except Exception as e:
         print(e)
 
