@@ -39,7 +39,7 @@ import datetime
 
 IMG_WIDTH = 640
 IMG_HEIGHT = 480
-
+global desired_depth = 180
 class Kinect:
     def __init__(self, controller):
         self.text = []
@@ -56,6 +56,10 @@ class Kinect:
             self.track = True
         if (ev == cv.CV_EVENT_LBUTTONUP):
             self.track = False
+        if (ev == cv.CV_EVENT_MBUTTONDOWN):
+            print "Middle Down"
+        if (ev == cv.CV_EVENT_MBUTTONUP):
+            print "Middle Up"
         if (self.track):
             print "%d,%d" % (x,y)
             self.sp_callback(x,y)
@@ -113,7 +117,7 @@ class Kinect:
 
         return cp
 
-    def _get_threashold_image_hsv(self, img, debug=True):
+    def _get_threashold_image_hsv(self, img, debug=False):
         """Get the binary threashold image using a HSV method"""
         imgHSV = cv.CreateImage(cv.GetSize(img), 8, 3);
         cv.CvtColor(img, imgHSV, cv.CV_BGR2HSV);

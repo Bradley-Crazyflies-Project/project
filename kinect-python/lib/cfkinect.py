@@ -110,8 +110,9 @@ class KinectPilot():
                 safety = 10 # Previous was 10
 		print "Kinect PID updating."
 		# temp = temp + 1; # Increase the temporary variable iteration. 
+                # desired_depth = 180
                 roll = self.r_pid.update(self.sp_x-x)
-                pitch = self.p_pid.update(200-depth) #prev desired was 180
+                pitch = self.p_pid.update(self.kinect.desired_depth-depth) #prev desired was 180
                 thrust = self.t_pid.update(self.sp_y-y)
                 roll_sp = -roll
                 pitch_sp = -pitch
@@ -132,6 +133,7 @@ class KinectPilot():
                     thrust_sp = 0
 
                 print self.t_pid.error
+                dist = math.sqrt(abs((self.sp_x-x)^2+(self.sp_y-y)^2)) # Distance between actual and desired position.
 
                 #texts = ["R=%.2f,P=%.2f,T=%.2f" % (roll_sp, pitch_sp, thrust_sp),
                  #        "TH: P=%.2f" % self.t_pid.P_value,
@@ -144,11 +146,13 @@ class KinectPilot():
                          "R: D=%.2f" % self.r_pid.D_value,
                          "P: P=%.2f" % self.p_pid.P_value,
                          "P: I=%.2f" % self.p_pid.I_value,
-                         "P: D=%.2f" % self.p_pid.D_value]
+                         "P: D=%.2f" % self.p_pid.D_value,
+                         "Error Distance: %.2f" % dist,
+                         "Desired Dist: %.2f" % self.kinect.desired_depth]
                 #texts = []
                 self.kinect.show(texts)
                 self.kinect.show_xy_sp(self.sp_x, self.sp_y)
-		dist = math.sqrt(abs((self.sp_x-x)^2+(self.sp_y-y)^2)) # Distance between actual and desired position.		
+				
 		output = [self.sp_x,x,self.sp_y,y,depth,dist]
 		with open("/home/jing/Documents/output_Data_1.csv","a") as csvfile:
 			writer = csv.writer(csvfile,delimiter=',')
