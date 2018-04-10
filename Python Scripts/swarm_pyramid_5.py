@@ -63,11 +63,11 @@ y1 = 0.25
 
 #         r: radius, z: height, x: starting_x, y: starting_y, offset: degree offset for circle, dir: direction around circle
 
-params1 = {'r': 0.7, 'z': 1.75, 'x_s': 1.25, 'y_s': 1.25, 'x_l': 1.25, 'y_l': 1.25, 'offset': 45, 'dir': -1}
+params1 = {'r': 0.7, 'z': 1.75, 'x_s': 1.25, 'y_s': 1.25, 'x_l': 1.25, 'y_l': 1.25, 'offset': 45, 'dir': 1}
 params2 = {'r': 0.7, 'z': 1.0, 'x_s': 1.75, 'y_s': 0.25, 'x_l': 0.25, 'y_l': 0.25, 'offset': 0, 'dir': 1}
 params3 = {'r': 0.7, 'z': 1.0, 'x_s': 1.0, 'y_s': 0.25, 'x_l': 1.0, 'y_l': 0.25, 'offset': 180, 'dir': 1}
 params4 = {'r': 0.7, 'z': 1.0, 'x_s': 0.25, 'y_s': 0.25, 'x_l': 1.75, 'y_l': 0.25, 'offset': 90, 'dir': 1}
-params5 = {'r': 0.7, 'z': 1.75, 'x_s': 0.25, 'y_s': 1.75, 'x_l': 1.75, 'y_l': 1.75, 'offset': 225, 'dir': -1}
+params5 = {'r': 0.7, 'z': 1.75, 'x_s': 0.25, 'y_s': 1.75, 'x_l': 1.75, 'y_l': 1.75, 'offset': 225, 'dir': 1}
 
 # assign the parameters to the URIs
 params = {
