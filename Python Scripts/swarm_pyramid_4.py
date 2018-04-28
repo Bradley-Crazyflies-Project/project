@@ -1,29 +1,9 @@
-# -*- coding: utf-8 -*-
-#
-#     ||          ____  _ __
-#  +------+      / __ )(_) /_______________ _____  ___
-#  | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
-#  +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
-#   ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
-#
-#  Copyright (C) 2017-2018 Bitcraze AB
-#
-#  Crazyflie Nano Quadcopter Client
-#
-#  This program is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; either version 2
-#  of the License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA  02110-1301, USA.
+"""
+Program that connects to 4 crazyflies and flies them in a "pyramid" formation
+starting locations as well as circle positions and heights are setup in the params values
 
+This program is designed to work with the Loco Positioning System running in TDoA mode
+"""
 import time
 import csv
 import datetime
@@ -75,7 +55,7 @@ params = {
     URI4: [params4],
 }
 
-# List of URIs, comment the one you do not want to fly
+# List of URIs, comment the ones you do not want to fly
 uris = {
     URI1,
     URI2,
@@ -179,8 +159,9 @@ def land(cf, position):
     time.sleep(0.1)
 
 def circle_next_pos(t,r,offset):
-    x_c = 1.25
-    y_c = 1.25
+# t: time value, r: radius of circle, offset: position in circle(Degrees)
+    x_c = 1.25          #Center x value
+    y_c = 1.25          #Center y value
     x_pos = x_c + (r * np.cos(t/10 + offset))
     y_pos = y_c + (r * np.sin(t/10 + offset))
 #    yaw = 90 + (5.45 * t)
@@ -190,6 +171,7 @@ def circle_next_pos(t,r,offset):
     return desired_pos
 
 def run_sequence(scf, params):
+#params: dict that holds parameter values
     try:
         cf = scf.cf
         cf.param.set_value('flightmode.posSet', '1')
@@ -206,7 +188,7 @@ def run_sequence(scf, params):
 
 
 # Circle Sequence
-        for t in range(100):
+        for t in range(100):            #Run the circle position updates
             position = circle_next_pos(t,r,offset)
             cf.commander.send_setpoint(position[1], position[0],
                                        position[3],
@@ -229,6 +211,8 @@ def position_callback(timestamp, data, logconf):
     y = data['kalman.stateY']
     z = data['kalman.stateZ']
     print('pos: ({}, {}, {})'.format(x, y, z))
+    
+    # Write position data to .csv; Must be updated to match your specific filesystem
     with open('/home/bitcraze/Documents/'+datetime.datetime.now().strftime('%Y-%m-%d-%H_')+'_flight_data.csv','a') as csvfile:
         writer = csv.writer(csvfile,delimiter=',')
         writer.writerow([x, y, z, timestamp])
@@ -264,6 +248,6 @@ if __name__ == '__main__':
         # flying.
         print('Waiting for parameters to be downloaded...')
         swarm.parallel(wait_for_param_download)
-        swarm.parallel(start_position_printing)
+        swarm.parallel(start_position_printing)     #activate the position printing to screen and to csv
         time.sleep(3.0)
-        swarm.parallel(run_sequence, args_dict=params)
+        swarm.parallel(run_sequence, args_dict=params)  #run the sequence and input parameters
