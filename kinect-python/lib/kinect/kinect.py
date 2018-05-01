@@ -50,12 +50,28 @@ class Kinect:
         cv.SetMouseCallback('RGB', self.mouse_ev)
         self.sp_callback = controller.set_sp_callback
         self.track = False
+<<<<<<< HEAD
+=======
+        self.desired_depth = 180
+>>>>>>> tcrice
 
     def mouse_ev(self, ev, x, y, flag, param):
         if (ev == cv.CV_EVENT_LBUTTONDOWN):
             self.track = True
         if (ev == cv.CV_EVENT_LBUTTONUP):
             self.track = False
+<<<<<<< HEAD
+=======
+        '''if (ev == cv.CV_EVENT_MBUTTONDOWN):
+            print "Middle Down"
+            if (self.desired_depth <= 220):
+                self.desired_depth += 5
+            else:
+                self.desired_depth = 150
+        if (ev == cv.CV_EVENT_MBUTTONUP):
+            print "Middle Up"
+        '''
+>>>>>>> tcrice
         if (self.track):
             print "%d,%d" % (x,y)
             self.sp_callback(x,y)
