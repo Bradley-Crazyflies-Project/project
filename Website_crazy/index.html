@@ -28,7 +28,6 @@
 <div id="myTopnav" role="navigation" class="topnav">
 	<ul>
 		<li><a href="index.html" id="active">Home</a></li>
-		<li><a href="about/about.html">About</a></li>
 		<li><a href="deliverables/deliverables.html">Deliverables</a></li>
 		<li><a href="team/teamMembers.html">Team</a></li>
 		<li><a href="videos/videos.html">Videos</a></li>
@@ -38,7 +37,6 @@
 <div id="mySidenav" class="sidenav">
 	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 	<a href="index.html">Home</a>
-	<a href="about/about.html">About</a>
 	<a href="deliverables/deliverables.html">Deliverables</a>
 	<a href="team/teamMembers.html">Team</a>
 	<a href="videos/videos.html">Videos</a>
@@ -47,9 +45,9 @@
 <div class="main">
 	<div class="banner">
 		<div class="title">
-			Formation Control of Crazyflies
+			Distributed Control of Crazyflies
 		</div>
-	</div>
+	</div> 
 	
 	<div class="mainTitle">
 		<span>
@@ -58,15 +56,28 @@
 	</div>
 	<div class="mainBody">
 		<p>
-			This project studies the implementation of a distributed formation control algorithm using veral nano quadcopters called Crazyflies. This will be accomplished using the Robot Operating System (ROS) for programming and a Kinect 360 module for localization. The Kinect module will track each quadcopter and provide localization information to our controller. From there, we will implement a distributed control algorithm to a swarm of Crazyflies. This will be done with the main control law running on remote computer and transmitting control signals to Crazyflies	through a Crazyradio dongle. The radio has the ability to send multiple	radio control signals to several Crazyflies at once, which allows us to individually control the swarm. Furthermore, the algorithm contains various	PD and PID controllers for quick response and stabilization. With these	controls the system will achieve hovering and formation control within a specified workspace. Our control zone will be setup in a clean, confined, indoor space.
+			This project studies the implementation of a distributed formation control algorithm using several nano quadcopters called Crazyflies. The control system contains two modules. The high-level control module is applied to generate the desired way-points for individual Crazyflies, and the low-level control module is used for stabilizing control of Crazyflies to follow trajectories formed by the way-points. The overall control algorithms were implemented with the aid of a python-based library developed by Bitcraze. Specifically, localization of Crazyflies was handled by an anchor-tag system known as the Loco Positioning System (LPS). A remote computer was used to run the high-level control laws and to transmit control signals to Crazyflies through a Crazyradio PA dongle. The radio can send multiple radio control signals to several Crazyflies at once, which allows us to update each Crazyflie&#39;s position individually. The on-board microcontroller of the Crazyflie handles the low-level PD and PID control algorithms for quick response and stabilization. Experiments including hovering control, trajectory following, and formation control were successfully conducted in an indoor environment.
 		</p>
+	</div>
+	<div class="crazyflies">
+		<img id="crazyflie"
+				 alt="crazyflie" 
+				 src="images/crazyflie.jpg" 
+				 height="450" 
+				 width="600" 
+		/>
+		<img id="crazyflie"
+			 alt="crazyflie" 
+			 src="images/crazyflie.jpg" 
+			 height="450" 
+			 width="600" 
+		/>
 	</div>
 </div>
 
 <div id="footer">
 	<p>
 		<a href="index.html">Home</a> | 
-		<a href="about/about.html">About</a> |
 		<a href="deliverables/deliverables.html">Deliverables</a> |
 		<a href="team/teamMembers.html">Team</a> | 
 		<a href="videos/videos.html">Videos</a>

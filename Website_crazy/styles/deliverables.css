@@ -1,33 +1,37 @@
-.downloads {
-	width: 100%;
-	position: relative;
-	display: table;
+.deliverablesMain {
+	margin-top: 60px;
+	margin-bottom: 20px;
+	margin-right: 40px;
+	margin-left: 40px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
 }
-.downloads p {
+.presentation_wrapper {
 	text-align: center;
-	font-size: 16px;
-}
-.downloads a {
-	font-family: "brandon-grotesque", sans-serif;
-	text-transform: uppercase;
-	/*text-decoration: none;*/
-}
-.downloads a:link {
-	color: black;
-}
-.downloads a:visited {
-	color: black;
-}
-.downloads a:hover {
-	color: #616A6B;
-	text-decoration: underline;
-}
-.deliverablesTitle {
-	text-align: center;
+	width: 626px;
 	font-size: 24px;
 	font-weight: 600;
 }
-
+.presentation_wrapper p {
+	text-align: center;
+	font-size: 16px;
+	font-weight: 400;
+}
+.presentation_wrapper a {
+	font-family: "brandon-grotesque", sans-serif;
+	text-transform: uppercase;
+}
+.presentation_wrapper a:link {
+	color: black;
+}
+.presentation_wrapper a:visited {
+	color: black;
+}
+.presentation_wrapper a:hover {
+	color: #616A6B;
+	text-decoration: underline;
+}
 .videoWrapper {
 	position: relative;
 	height: 380px;
@@ -41,15 +45,42 @@
 	height: 380px;
 	transition:  0.6s;
 }
+.github_wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+.github_wrapper a {
+	text-transform: uppercase;
+	font-weight: 600;
+}
+.github_wrapper a:link {
 
+	color: blue;
+}
+.github_wrapper a:visited {
+	color: blue;
+}
+/* .github_wrapper a:hover { */
+	/* color: #616A6B; */
+	/* text-decoration: underline; */
+/* } */
 @media screen and (min-width: 1245px) {
+	.presentation_wrapper {
+		width: 749px;
+	}
 	.videoWrapper {
-		height: 452px;
+		width: 749px;
+		height: 455px;
 	}
 	.videoWrapper iframe {
 		position: relative;
-		width: 755px;
-		height: 452px;
+		width: 749px;
+		height: 455px;
 		transition:  0.6s;
+	}
+	.deliverablesMain {
+		flex-wrap: nowrap;
+		justify-content: space-around;
 	}
 }
